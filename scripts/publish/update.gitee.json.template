@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "channel": "stable",
+  "windows": {
+    "currentVersion": "1.0.0",
+    "latestVersion": "1.0.0",
+    "commitSha": "TBD_BUILD_COMMIT_SHA",
+    "releaseDateUtc": "TBD",
+    "minSupportedVersion": "1.0.0",
+    "notesMdUrl": null,
+    "package": {
+      "fileName": "MoDi.Setup.gitee.exe",
+      "sizeBytes": 0,
+      "sha256": "TBD_PACKAGE_SHA256",
+      "downloadUrl": "TBD_GITEE_RAW_URL"
+    }
+  },
+  "android": {
+    "currentVersion": "1.0.0",
+    "latestVersion": "1.0.0",
+    "commitSha": "TBD_BUILD_COMMIT_SHA",
+    "releaseDateUtc": "TBD",
+    "minSupportedVersion": "1.0.0",
+    "notesMdUrl": null,
+    "package": {
+      "fileName": "MoDi.android.gitee.apk",
+      "sizeBytes": 0,
+      "sha256": "TBD_PACKAGE_SHA256",
+      "downloadUrl": "TBD_GITEE_RAW_URL"
+    }
+  },
+  "_comment": "此文件为 Gitee 更新包骨架。TBD_ 字段仅在受控构建阶段注入真实值：commitSha 固定对应源码提交，sha256 为安装包哈希，凭据绝不写入此文件。社区版不使用此文件。"
+}

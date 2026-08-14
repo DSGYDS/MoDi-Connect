@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta charset="UTF-8"><title>NavItem</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+.nav-item {
+  display: flex; align-items: center; gap: 12px; padding: 12px 20px; margin: 2px 8px;
+  border-radius: 10px; cursor: pointer; color: #4B5563; font-size: 15px;
+  transition: all 0.15s;
+}
+.nav-item:hover { background: #F3F4F6; color: #111827; }
+.nav-item.active { background: rgba(0,195,137,0.12); color: #00C389; }
+.nav-item i { width: 20px; text-align: center; font-size: 16px; }
+</style>
+</head>
+<body style="background:#fff;padding:40px;font-family:'Inter',sans-serif;">
+<div class="nav-item active"><i class="fas fa-home"></i><span>首页</span></div>
+<div class="nav-item"><i class="fas fa-desktop"></i><span>设备</span></div>
+<div class="nav-item"><i class="fas fa-list"></i><span>日志</span></div>
+<div class="nav-item"><i class="fas fa-cog"></i><span>设置</span></div>
+<div class="nav-item"><i class="fas fa-info-circle"></i><span>关于</span></div>
+</body>
+</html>

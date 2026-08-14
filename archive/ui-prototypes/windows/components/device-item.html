@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta charset="UTF-8"><title>DeviceItem</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#F9FAFB; padding:40px; font-family:'Inter',sans-serif; display:flex; gap:16px; flex-wrap:wrap; }
+.device-item { background:#fff; border-radius:16px; padding:20px; width:140px; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,0.06); transition:all 0.2s; cursor:pointer; }
+.device-item:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(0,0,0,0.10); }
+.device-icon { width:48px; height:48px; border-radius:12px; background:#F0FFFA; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; font-size:22px; color:#00C389; }
+.device-name { font-size:15px; font-weight:500; color:#111827; margin-bottom:4px; }
+.device-status { font-size:12px; color:#22C55E; }
+.device-status.offline { color:#6B7280; }
+</style>
+</head>
+<body>
+<div class="device-item"><div class="device-icon"><i class="fas fa-desktop"></i></div><div class="device-name">DESKTOP-7X3KQ</div><div class="device-status"><i class="fas fa-circle"></i> 在线</div></div>
+<div class="device-item"><div class="device-icon"><i class="fas fa-mobile-alt"></i></div><div class="device-name">Xiaomi 14</div><div class="device-status"><i class="fas fa-circle"></i> 在线</div></div>
+<div class="device-item"><div class="device-icon"><i class="fas fa-desktop"></i></div><div class="device-name">OFFICE-PC</div><div class="device-status offline"><i class="fas fa-circle"></i> 离线</div></div>
+</body>
+</html>

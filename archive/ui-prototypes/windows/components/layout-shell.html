@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta charset="UTF-8"><title>Layout Shell</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',sans-serif; background:#0d0d1a; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.window { width:1280px; height:720px; background:#F9FAFB; border-radius:20px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.5); display:flex; flex-direction:column; }
+/* Header */
+.header { height:48px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; border-bottom:1px solid #E5E7EB; background:#fff; }
+.header-left { display:flex; align-items:center; gap:10px; }
+.logo-icon { width:28px; height:28px; border-radius:8px; background:#00C389; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; }
+.logo-text { font-size:16px; font-weight:600; color:#111827; }
+.header-actions { display:flex; align-items:center; gap:12px; }
+.header-actions i { color:#6B7280; cursor:pointer; font-size:14px; }
+/* Body */
+.body { display:flex; flex:1; overflow:hidden; }
+/* Sidebar */
+.sidebar { width:220px; background:#fff; border-right:1px solid #E5E7EB; display:flex; flex-direction:column; padding:12px 0; }
+.sidebar .logo-area { padding:0 20px; margin-bottom:12px; }
+.nav-item { display:flex; align-items:center; gap:12px; padding:12px 20px; margin:2px 8px; border-radius:10px; cursor:pointer; color:#4B5563; font-size:15px; transition:all 0.15s; }
+.nav-item:hover { background:#F3F4F6; color:#111827; }
+.nav-item.active { background:rgba(0,195,137,0.12); color:#00C389; }
+.nav-item i { width:20px; text-align:center; font-size:16px; }
+.sidebar-spacer { flex:1; }
+/* Main */
+.main { flex:1; padding:24px 32px; overflow-y:auto; }
+/* Content */
+.page-title { font-size:20px; font-weight:600; color:#111827; margin-bottom:4px; }
+.page-subtitle { font-size:14px; color:#6B7280; margin-bottom:24px; }
+.grid-row { display:flex; gap:16px; margin-bottom:16px; }
+.card { background:#fff; border-radius:16px; padding:20px; box-shadow:0 4px 20px rgba(0,0,0,0.06); }
+.card-title { font-size:13px; color:#6B7280; margin-bottom:12px; font-weight:500; }
+/* Footer */
+.footer { height:36px; display:flex; align-items:center; justify-content:space-between; padding:0 24px; border-top:1px solid #E5E7EB; font-size:12px; color:#6B7280; background:#fff; }
+.footer .dot { width:8px; height:8px; border-radius:50%; background:#22C55E; display:inline-block; animation:breathe 2s infinite; }
+@keyframes breathe { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+</style>
+</head>
+<body>
+<div class="window">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-icon">🔊</div>
+      <span class="logo-text">LAN Audio Bridge</span>
+    </div>
+    <div class="header-actions">
+      <i class="fas fa-adjust"></i>
+      <i class="fas fa-minus"></i>
+      <i class="fas fa-square"></i>
+      <i class="fas fa-times"></i>
+    </div>
+  </header>
+  <!-- Body -->
+  <div class="body">
+    <nav class="sidebar">
+      <div class="logo-area"><div class="logo-icon" style="margin-bottom:6px">🔊</div><span class="logo-text" style="font-size:14px">LAN Audio Bridge</span></div>
+      <div class="nav-item active"><i class="fas fa-home"></i><span>首页</span></div>
+      <div class="nav-item"><i class="fas fa-desktop"></i><span>设备</span></div>
+      <div class="nav-item"><i class="fas fa-list"></i><span>日志</span></div>
+      <div class="nav-item"><i class="fas fa-cog"></i><span>设置</span></div>
+      <div class="nav-item"><i class="fas fa-info-circle"></i><span>关于</span></div>
+      <div class="sidebar-spacer"></div>
+      <div class="nav-item" style="color:#6B7280;font-size:13px"><i class="fas fa-adjust"></i><span>切换主题</span></div>
+    </nav>
+    <main class="main">
+      <!-- Page title row -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px">
+        <div>
+          <div class="page-title">首页</div>
+          <div class="page-subtitle">当前状态总览与控制</div>
+        </div>
+        <button style="display:flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:10px;background:#00C389;color:#fff;font-size:14px;font-weight:500;cursor:pointer"><i class="fas fa-play"></i> 开始推流</button>
+      </div>
+      <!-- Status + QR row -->
+      <div class="grid-row">
+        <div class="card" style="flex:1">
+          <div class="card-title"><i class="fas fa-circle" style="color:#22C55E;font-size:8px"></i> 连接状态</div>
+          <div style="font-size:18px;font-weight:600;color:#111827;margin-bottom:12px">已连接到 PC</div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;color:#374151">
+            <div><i class="fas fa-desktop" style="width:18px;color:#6B7280"></i> DESKTOP-7X3KQ</div>
+            <div><i class="fas fa-network-wired" style="width:18px;color:#6B7280"></i> 192.168.31.90</div>
+            <div style="margin-top:6px;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:10px;background:#F3F4F6;font-size:12px"><i class="fas fa-wifi"></i> WiFi 5G · 延迟 12ms</div>
+          </div>
+        </div>
+        <div class="card" style="width:220px;text-align:center">
+          <div class="card-title">扫码连接</div>
+          <div style="width:100px;height:100px;background:#1F2937;border-radius:10px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;letter-spacing:2px">⬛⬛</div>
+          <div style="font-size:12px;color:#6B7280;margin-bottom:10px">打开手机 App 扫码</div>
+          <button style="width:100%;height:36px;border:none;border-radius:8px;background:#00C389;color:#fff;font-size:13px;cursor:pointer"><i class="fas fa-qrcode"></i> 刷新</button>
+        </div>
+      </div>
+      <!-- Stats + Meter row -->
+      <div class="grid-row">
+        <div class="card" style="flex:1">
+          <div class="card-title">音频统计</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px">
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid #F3F4F6;padding-bottom:4px;font-size:13px"><span style="color:#6B7280">采样率</span><span style="font-weight:500;color:#111827">48 kHz</span></div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid #F3F4F6;padding-bottom:4px;font-size:13px"><span style="color:#6B7280">码率</span><span style="font-weight:500;color:#111827">128 kbps</span></div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid #F3F4F6;padding-bottom:4px;font-size:13px"><span style="color:#6B7280">延迟</span><span style="font-weight:500;color:#111827">12 ms</span></div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid #F3F4F6;padding-bottom:4px;font-size:13px"><span style="color:#6B7280">丢包</span><span style="font-weight:500;color:#111827">0.3 %</span></div>
+          </div>
+        </div>
+        <div class="card" style="flex:1">
+          <div class="card-title">音频电平</div>
+          <div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:11px;color:#6B7280;margin-bottom:2px"><span>接收</span><span>—18 dB</span></div><div style="height:8px;background:#E5E7EB;border-radius:4px;overflow:hidden;display:flex;gap:2px"><div style="height:100%;background:#22C55E;border-radius:3px;width:35%"></div><div style="height:100%;background:#22C55E;border-radius:3px;width:25%"></div><div style="height:100%;background:#F59E0B;border-radius:3px;width:8%"></div></div></div>
+          <div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:11px;color:#6B7280;margin-bottom:2px"><span>发送</span><span>—12 dB</span></div><div style="height:8px;background:#E5E7EB;border-radius:4px;overflow:hidden;display:flex;gap:2px"><div style="height:100%;background:#22C55E;border-radius:3px;width:40%"></div><div style="height:100%;background:#22C55E;border-radius:3px;width:20%"></div><div style="height:100%;background:#F59E0B;border-radius:3px;width:10%"></div></div></div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <!-- Footer -->
+  <footer class="footer">
+    <div style="display:flex;align-items:center;gap:8px"><span class="dot"></span> 音频端口 12345 · 握手端口 12347</div>
+    <span>v0.9 · 接收端</span>
+  </footer>
+</div>
+</body>
+</html>

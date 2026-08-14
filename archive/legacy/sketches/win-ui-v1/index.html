@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAN Audio Bridge — UI 设计探索</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, "Microsoft YaHei UI", "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  background: #111618;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* 窗口模拟 */
+.window {
+  width: 1280px;
+  height: 720px;
+  background: #111618;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+}
+
+/* 标题栏 */
+.titlebar {
+  height: 44px;
+  background: #171D20;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid #2A3438;
+  -webkit-app-region: drag;
+}
+.titlebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.titlebar-logo svg { display: block; }
+.titlebar-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.3px;
+}
+.titlebar-spacer { flex: 1; }
+.titlebar-actions {
+  display: flex;
+  gap: 6px;
+  -webkit-app-region: no-drag;
+}
+.titlebar-btn {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.titlebar-btn:hover { opacity: 0.8; }
+.btn-min { background: #F59E0B; }
+.btn-max { background: #22C55E; }
+.btn-close { background: #EF4444; }
+
+/* 主体布局 */
+.body { display: flex; flex: 1; overflow: hidden; }
+
+/* 侧边栏 */
+.sidebar {
+  width: 220px;
+  background: #171D20;
+  border-right: 1px solid #2A3438;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 0;
+}
+.sidebar-section {
+  padding: 0 16px;
+  margin-bottom: 8px;
+}
+.sidebar-label {
+  font-size: 11px;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #A7B0B5;
+  font-size: 14px;
+  transition: all 0.15s;
+  margin: 1px 8px;
+}
+.nav-item:hover {
+  background: #20272B;
+  color: #fff;
+}
+.nav-item.active {
+  background: #182B27;
+  color: #00C389;
+}
+.nav-item svg { flex-shrink: 0; }
+.nav-item span { flex: 1; }
+.nav-badge {
+  font-size: 11px;
+  background: #00C389;
+  color: #fff;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+.sidebar-bottom {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid #2A3438;
+  margin-left: 8px;
+  margin-right: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+/* 主内容区 */
+.content {
+  flex: 1;
+  padding: 24px 32px;
+  overflow-y: auto;
+}
+
+/* 页面标题 */
+.page-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.page-subtitle {
+  font-size: 14px;
+  color: #6B7280;
+  margin-bottom: 24px;
+}
+
+/* 状态卡片行 */
+.status-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* 卡片 */
+.card {
+  background: #171D20;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #2A3438;
+}
+.card-status {
+  flex: 1;
+  min-width: 280px;
+}
+.card-status .card-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.connection-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  animation: breathe 2s ease-in-out infinite;
+}
+.connection-dot.green { background: #22C55E; }
+.connection-dot.yellow { background: #F59E0B; }
+.connection-dot.red { background: #EF4444; }
+.connection-dot.idle { background: #6B7280; }
+
+@keyframes breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.status-label { font-size: 14px; color: #A7B0B5; }
+.status-value { font-size: 16px; font-weight: 600; color: #fff; }
+.status-meta { font-size: 12px; color: #6B7280; margin-top: 4px; }
+.status-meta-code { font-family: 'SF Mono', 'Cascadia Code', monospace; font-size: 12px; color: #00C389; }
+
+/* 当前模式卡片 */
+.card-mode {
+  flex: 1;
+  min-width: 240px;
+}
+.mode-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #182B27;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+.mode-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.mode-desc {
+  font-size: 13px;
+  color: #6B7280;
+}
+
+/* 四模式卡片 */
+.modes-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #A7B0B5;
+  margin-bottom: 12px;
+}
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.mode-card {
+  background: #171D20;
+  border: 1px solid #2A3438;
+  border-radius: 16px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+.mode-card:hover {
+  border-color: #00C389;
+  background: #182B27;
+}
+.mode-card.active {
+  border-color: #00C389;
+  border-width: 2px;
+  background: #182B27;
+}
+.mode-card-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+.mode-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.mode-card-desc {
+  font-size: 12px;
+  color: #6B7280;
+}
+
+/* 音频电平 */
+.audio-meter-section {
+  margin-bottom: 24px;
+}
+.audio-meter-label {
+  font-size: 12px;
+  color: #6B7280;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.audio-meter-bar {
+  display: flex;
+  gap: 3px;
+  height: 28px;
+  align-items: flex-end;
+}
+.meter-segment {
+  flex: 1;
+  border-radius: 2px;
+  transition: all 0.1s;
+  min-height: 4px;
+}
+.meter-segment.low { background: #22C55E; }
+.meter-segment.mid { background: #F59E0B; }
+.meter-segment.high { background: #EF4444; }
+.meter-segment.inactive { background: #2A3438; }
+.meter-db {
+  font-size: 12px;
+  color: #6B7280;
+  font-family: 'SF Mono', 'Cascadia Code', monospace;
+  margin-top: 4px;
+}
+
+/* 波形 */
+.waveform {
+  display: flex;
+  align-items: flex-end;
+  height: 40px;
+  gap: 2px;
+  margin-bottom: 24px;
+}
+.wave-bar {
+  width: 3px;
+  border-radius: 2px;
+  background: #00C389;
+  transition: height 0.15s;
+  animation: wave 0.8s ease-in-out infinite alternate;
+}
+.wave-bar:nth-child(1) { animation-delay: 0s; height: 12px; }
+.wave-bar:nth-child(2) { animation-delay: 0.08s; height: 20px; }
+.wave-bar:nth-child(3) { animation-delay: 0.16s; height: 32px; }
+.wave-bar:nth-child(4) { animation-delay: 0.24s; height: 38px; }
+.wave-bar:nth-child(5) { animation-delay: 0.32s; height: 28px; }
+.wave-bar:nth-child(6) { animation-delay: 0.40s; height: 16px; }
+.wave-bar:nth-child(7) { animation-delay: 0.48s; height: 8px; }
+.wave-bar:nth-child(8) { animation-delay: 0.56s; height: 22px; }
+.wave-bar:nth-child(9) { animation-delay: 0.64s; height: 34px; }
+.wave-bar:nth-child(10) { animation-delay: 0.72s; height: 18px; }
+
+@keyframes wave {
+  0% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/* 按钮 */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 24px;
+  border-radius: 10px;
+  border: none;
+  background: #00C389;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  width: 100%;
+}
+.btn-primary:hover { background: #00D99A; transform: scale(0.98); }
+.btn-primary:active { transform: scale(0.96); }
+
+.btn-stop {
+  background: #EF4444;
+}
+.btn-stop:hover { background: #F87171; }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1px solid #2A3438;
+  background: transparent;
+  color: #A7B0B5;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-secondary:hover { background: #20272B; color: #fff; }
+
+/* Footer */
+.footer {
+  height: 36px;
+  background: #171D20;
+  border-top: 1px solid #2A3438;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  font-size: 12px;
+  color: #6B7280;
+  gap: 16px;
+}
+.footer-dot { color: #22C55E; }
+.footer-right { margin-left: auto; }
+
+/* Light theme toggle demo */
+.theme-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+}
+.theme-switch-label {
+  font-size: 12px;
+  color: #6B7280;
+}
+.toggle-track {
+  width: 36px;
+  height: 20px;
+  background: #2A3438;
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.toggle-thumb {
+  width: 16px;
+  height: 16px;
+  background: #A7B0B5;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s;
+}
+.toggle-track.light {
+  background: #ccc;
+}
+.toggle-track.light .toggle-thumb {
+  left: 18px;
+  background: #00C389;
+}
+
+/* 浅色主题 (通过 JS 切换) */
+body.light {
+  background: #e8eef0;
+}
+body.light .window { background: #F7F9FA; box-shadow: 0 8px 40px rgba(0,0,0,0.1); }
+body.light .titlebar { background: #fff; border-color: #E5E7EB; }
+body.light .sidebar { background: #fff; border-color: #E5E7EB; }
+body.light .content { background: #F7F9FA; }
+body.light .card { background: #fff; border-color: #E5E7EB; }
+body.light .nav-item { color: #6B7280; }
+body.light .nav-item:hover { background: #f3f4f6; color: #111827; }
+body.light .nav-item.active { background: #F0FFFA; color: #00C389; }
+body.light .mode-card { background: #fff; border-color: #E5E7EB; }
+body.light .mode-card:hover { background: #F0FFFA; border-color: #00C389; }
+body.light .mode-card.active { background: #F0FFFA; border-color: #00C389; }
+body.light .page-title { color: #111827; }
+body.light .page-subtitle { color: #6B7280; }
+body.light .status-value { color: #111827; }
+body.light .status-meta { color: #9CA3AF; }
+body.light .mode-name { color: #111827; }
+body.light .mode-card-title { color: #111827; }
+body.light .footer { background: #fff; border-color: #E5E7EB; color: #9CA3AF; }
+body.light .btn-secondary { border-color: #E5E7EB; color: #6B7280; }
+body.light .btn-secondary:hover { background: #f3f4f6; color: #111827; }
+body.light .sidebar-label { color: #9CA3AF; }
+body.light .titlebar-title { color: #111827; }
+body.light .nav-badge { color: #fff; }
+body.light .wave-bar { background: #00C389; }
+body.light .toggle-track { background: #E5E7EB; }
+body.light .mode-icon { background: #F0FFFA; }
+</style>
+</head>
+<body>
+
+<div class="window" id="appWindow">
+  <!-- 标题栏 -->
+  <div class="titlebar">
+    <div class="titlebar-logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00C389" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+        <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+      </svg>
+      <span class="titlebar-title">LAN Audio Bridge</span>
+    </div>
+    <div class="titlebar-spacer"></div>
+    <div class="titlebar-actions">
+      <div class="titlebar-btn btn-min" title="最小化"></div>
+      <div class="titlebar-btn btn-max" title="最大化"></div>
+      <div class="titlebar-btn btn-close" title="关闭"></div>
+    </div>
+  </div>
+
+  <!-- 主体 -->
+  <div class="body">
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">导航</div>
+      </div>
+      <div class="nav-item active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>首页</span>
+      </div>
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        <span>设备</span>
+        <span class="nav-badge">1</span>
+      </div>
+      <div class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>设置</span>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="nav-item" onclick="toggleTheme()" style="cursor:pointer">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <span>切换主题</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 主内容 -->
+    <div class="content">
+      <h1 class="page-title">首页</h1>
+      <p class="page-subtitle">当前状态总览与控制</p>
+
+      <!-- 状态卡片行 -->
+      <div class="status-row">
+        <div class="card card-status">
+          <div class="card-row" style="margin-bottom:12px">
+            <div class="connection-dot green"></div>
+            <span class="status-label">连接状态</span>
+          </div>
+          <div class="status-value" style="margin-bottom:6px">已连接到 PC</div>
+          <div class="status-meta">
+            <span style="display:block">DESKTOP-7X3KQ</span>
+            <span style="display:block">192.168.31.90</span>
+            <span class="status-meta-code" style="margin-top:6px;display:inline-block">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg>
+              WiFi 5G · 信号强
+            </span>
+          </div>
+        </div>
+
+        <div class="card card-mode">
+          <div class="mode-icon" style="background:#182B27">🎧</div>
+          <div class="mode-name">2 — 监听模式</div>
+          <div class="mode-desc">系统音频 + 麦克风混音 → 扬声器</div>
+        </div>
+      </div>
+
+      <!-- 四模式切换 -->
+      <div class="modes-title">选择推流模式</div>
+      <div class="modes-grid">
+        <div class="mode-card" onclick="selectMode(this)">
+          <div class="mode-card-icon">🔊</div>
+          <div class="mode-card-title">扬声器</div>
+          <div class="mode-card-desc">手机 → 电脑扬声器</div>
+        </div>
+        <div class="mode-card active" onclick="selectMode(this)">
+          <div class="mode-card-icon">🎧</div>
+          <div class="mode-card-title">监听</div>
+          <div class="mode-card-desc">系统音频 + 麦克风</div>
+        </div>
+        <div class="mode-card" onclick="selectMode(this)">
+          <div class="mode-card-icon">🎙</div>
+          <div class="mode-card-title">虚拟麦克风</div>
+          <div class="mode-card-desc">手机 → 电脑麦克风</div>
+        </div>
+        <div class="mode-card" onclick="selectMode(this)">
+          <div class="mode-card-icon">🎮</div>
+          <div class="mode-card-title">整活</div>
+          <div class="mode-card-desc">游戏 / 娱乐模式</div>
+        </div>
+      </div>
+
+      <!-- 音频电平 -->
+      <div class="audio-meter-section">
+        <div class="audio-meter-label">音频电平</div>
+        <div class="audio-meter-bar">
+          <div class="meter-segment low" style="height:20px"></div>
+          <div class="meter-segment low" style="height:24px"></div>
+          <div class="meter-segment low" style="height:16px"></div>
+          <div class="meter-segment low" style="height:18px"></div>
+          <div class="meter-segment low" style="height:22px"></div>
+          <div class="meter-segment low" style="height:28px"></div>
+          <div class="meter-segment mid" style="height:18px"></div>
+          <div class="meter-segment low" style="height:12px"></div>
+          <div class="meter-segment low" style="height:8px"></div>
+          <div class="meter-segment inactive" style="height:4px"></div>
+          <div class="meter-segment inactive" style="height:4px"></div>
+          <div class="meter-segment inactive" style="height:4px"></div>
+          <div class="meter-segment inactive" style="height:4px"></div>
+          <div class="meter-segment inactive" style="height:4px"></div>
+          <div class="meter-segment inactive" style="height:4px"></div>
+          <div class="meter-segment inactive" style="height:4px"></div>
+          <div class="meter-segment inactive" style="height:4px"></div>
+          <div class="meter-segment inactive" style="height:4px"></div>
+          <div class="meter-segment inactive" style="height:4px"></div>
+          <div class="meter-segment inactive" style="height:4px"></div>
+        </div>
+        <div class="meter-db">接收  —18 dB</div>
+      </div>
+
+      <!-- 波形 -->
+      <div class="audio-meter-label">实时波形</div>
+      <div class="waveform">
+        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+        <div class="wave-bar"></div><div class="wave-bar"></div>
+      </div>
+
+      <!-- 按钮 -->
+      <button class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        停止推流
+      </button>
+    </div>
+  </div>
+
+  <!-- 底部状态栏 -->
+  <div class="footer">
+    <span class="footer-dot">●</span> 音频端口 12345
+    <span style="margin-left:12px">握手端口 12347</span>
+    <span class="footer-right">LAN Audio Bridge v0.9</span>
+  </div>
+</div>
+
+<script>
+function selectMode(el) {
+  document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+}
+function toggleTheme() {
+  document.body.classList.toggle('light');
+}
+// 点击主题切换效果 (sidebar 按钮)
+document.querySelector('.sidebar-bottom .nav-item').addEventListener('click', toggleTheme);
+</script>
+</body>
+</html>

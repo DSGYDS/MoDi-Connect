@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta charset="UTF-8"><title>StatusCard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+.card { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); min-width: 280px; }
+.card-title { font-size: 13px; color: #6B7280; margin-bottom: 12px; font-weight: 500; }
+.connection-status { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.status-dot { width: 10px; height: 10px; border-radius: 50%; background: #22C55E; animation: breathe 2s infinite; }
+.status-label { font-size: 18px; font-weight: 600; color: #111827; }
+.device-info { display: flex; flex-direction: column; gap: 8px; }
+.device-info i { width: 18px; color: #6B7280; }
+.info-row { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #374151; }
+.latency-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 10px; background: #F3F4F6; font-size: 12px; color: #111827; margin-top: 6px; }
+@keyframes breathe { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(0.92); } }
+</style>
+</head>
+<body style="background:#F9FAFB;padding:40px;font-family:'Inter',sans-serif;">
+<div class="card">
+  <div class="card-title">连接状态</div>
+  <div class="connection-status">
+    <span class="status-dot"></span>
+    <span class="status-label">已连接到 PC</span>
+  </div>
+  <div class="device-info">
+    <div class="info-row"><i class="fas fa-desktop"></i><span>DESKTOP-7X3KQ</span></div>
+    <div class="info-row"><i class="fas fa-network-wired"></i><span>192.168.31.90</span></div>
+    <span class="latency-badge"><i class="fas fa-wifi"></i>WiFi 5G · 延迟 12ms</span>
+  </div>
+</div>
+</body>
+</html>

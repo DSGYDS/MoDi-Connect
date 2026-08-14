@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta charset="UTF-8"><title>Sub-components</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#F9FAFB; padding:40px; font-family:'Inter',sans-serif; display:flex; gap:20px; }
+/* Log Entry */
+.log-entry { display:flex; align-items:flex-start; gap:10px; padding:10px 14px; background:#fff; border-radius:10px; margin-bottom:6px; box-shadow:0 2px 8px rgba(0,0,0,0.04); }
+.log-time { font-size:12px; color:#6B7280; white-space:nowrap; min-width:70px; font-family:monospace; }
+.log-level { font-size:10px; font-weight:600; padding:2px 8px; border-radius:4px; text-transform:uppercase; letter-spacing:0.5px; }
+.log-level.info { background:#D1FAE5; color:#065F46; }
+.log-level.warn { background:#FEF3C7; color:#92400E; }
+.log-level.error { background:#FEE2E2; color:#991B1B; }
+.log-msg { font-size:13px; color:#374151; flex:1; }
+/* Settings */
+.setting-card { background:#fff; border-radius:16px; padding:20px; width:360px; box-shadow:0 4px 20px rgba(0,0,0,0.06); }
+.setting-item { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid #F3F4F6; }
+.setting-item:last-child { border-bottom:none; }
+.setting-label { font-size:14px; font-weight:500; color:#111827; }
+.setting-desc { font-size:12px; color:#6B7280; margin-top:2px; }
+.toggle { width:40px; height:22px; border-radius:11px; background:#E5E7EB; position:relative; cursor:pointer; transition:background 0.2s; flex-shrink:0; }
+.toggle.on { background:#00C389; }
+.toggle::after { content:''; width:18px; height:18px; border-radius:50%; background:#fff; position:absolute; top:2px; left:2px; transition:all 0.2s; box-shadow:0 1px 3px rgba(0,0,0,0.15); }
+.toggle.on::after { left:20px; }
+/* About */
+.about-card { background:#fff; border-radius:16px; padding:32px; text-align:center; width:400px; box-shadow:0 4px 20px rgba(0,0,0,0.06); }
+.about-icon { width:64px; height:64px; border-radius:16px; background:#F0FFFA; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px; }
+.about-title { font-size:22px; font-weight:600; color:#111827; margin-bottom:8px; }
+.about-desc { font-size:14px; color:#6B7280; line-height:1.6; margin-bottom:4px; }
+</style>
+</head>
+<body>
+<!-- Log -->
+<div style="width:400px">
+  <h3 style="font-size:16px;margin-bottom:12px;color:#111827">📋 日志</h3>
+  <div class="log-entry"><span class="log-time">10:23:45</span><span class="log-level info">INFO</span><span class="log-msg">连接成功: DESKTOP-7X3KQ</span></div>
+  <div class="log-entry"><span class="log-time">10:23:40</span><span class="log-level info">INFO</span><span class="log-msg">握手完成, 路由模式 2</span></div>
+  <div class="log-entry"><span class="log-time">10:23:35</span><span class="log-level warn">WARN</span><span class="log-msg">网络延迟升高: 45ms</span></div>
+  <div class="log-entry"><span class="log-time">10:23:30</span><span class="log-level error">ERROR</span><span class="log-msg">握手超时, 重试中 (2/5)</span></div>
+  <div class="log-entry"><span class="log-time">10:23:25</span><span class="log-level info">INFO</span><span class="log-msg">mDNS 发现设备</span></div>
+</div>
+<!-- Settings -->
+<div class="setting-card">
+  <h3 style="font-size:16px;margin-bottom:8px;color:#111827">⚙️ 设置</h3>
+  <div class="setting-item"><div><div class="setting-label">开机自启动</div><div class="setting-desc">系统启动时自动运行</div></div><div class="toggle on"></div></div>
+  <div class="setting-item"><div><div class="setting-label">记住上次设备</div><div class="setting-desc">启动时自动连接</div></div><div class="toggle on"></div></div>
+  <div class="setting-item"><div><div class="setting-label">系统托盘常驻</div><div class="setting-desc">关闭窗口时最小化到托盘</div></div><div class="toggle on"></div></div>
+  <div class="setting-item"><div><div class="setting-label">自动更新</div><div class="setting-desc">发现新版本时自动升级</div></div><div class="toggle"></div></div>
+</div>
+<!-- About -->
+<div class="about-card">
+  <div class="about-icon">🔊</div>
+  <div class="about-title">LAN Audio Bridge</div>
+  <div class="about-desc">让手机的音频零配置、低延迟、多模式地传到电脑播放。</div>
+  <div class="about-desc" style="margin-top:12px;font-size:12px">版本 0.9.0 · 四链路全通</div>
+  <div class="about-desc" style="font-size:12px">Windows + Android · MIT License</div>
+</div>
+</body>
+</html>
