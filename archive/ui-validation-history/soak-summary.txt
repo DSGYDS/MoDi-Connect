@@ -1,5 +1,0 @@
-﻿SOAK_OK
-duration_minutes=30
-state_requests=449
-window_closed=True
-result_file=D:\LAN-Audio-Bridge-worktrees\modern-ink-uitest\test-ui\UITest\Validation\soak-result.csv
